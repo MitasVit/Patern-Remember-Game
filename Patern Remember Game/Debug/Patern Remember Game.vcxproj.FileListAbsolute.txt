@@ -1,0 +1,2 @@
+D:\C++PROGRAMUJU\Visual studio c++\Patern Remember Game\Debug\Patern Remember Game.exe
+D:\C++PROGRAMUJU\Visual studio c++\Patern Remember Game\Debug\Patern Remember Game.pdb
