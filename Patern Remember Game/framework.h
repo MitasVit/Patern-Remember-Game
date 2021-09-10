@@ -24,6 +24,7 @@
 #include <stdio.h>      /* printf, scanf, puts, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
+#include <conio.h>
 
 
 using namespace std;
@@ -127,12 +128,12 @@ void Draw3x3matrix(HDC hdc) {
 }
 
 void DrawRight(HDC hdc) {
-    /*RECT rc = RECT{ 55,55,95,95 };//vlevo nahore x +y vpravo dole x+ y
+    RECT rc = RECT{ 55,55,95,95 };//vlevo nahore x +y vpravo dole x+ y
     RECT rc2 = RECT{ 155,55,195,95 };
     RECT rc3 = RECT{ 105,105,145,145 };
     FillRect(hdc, &rc, red);
     FillRect(hdc, &rc2, green);
-    FillRect(hdc, &rc3, blue);*/
+    FillRect(hdc, &rc3, blue);
     DrawRc(hdc, good2[RED][0], red);
     DrawRc(hdc, good2[BLUE][0], blue);
     DrawRc(hdc, good2[YELLOW][0], yellow);
@@ -140,17 +141,18 @@ void DrawRight(HDC hdc) {
 }
 
 void DrawRc(HDC hdc, int ps, HBRUSH br) {
-    if (ps == 1) {
-        RECT rc = RECT{ 55,55,95,95 };
+    if (ps == 1) {//op
+        RECT rc = RECT{ 55,155,95,195 };
         FillRect(hdc, &rc, br);
     }
-    else if (ps == 2) {
-        RECT rc = RECT{ 105,55,145,95 };
+    else if (ps == 2) {//op
+        RECT rc = RECT{ 105,155,145,195 };
         FillRect(hdc, &rc, br);
     }
-    else if (ps == 3) {
-        RECT rc = RECT{ 155,55,195,95 };
+    else if (ps == 3) {//op
+        RECT rc = RECT{ 155,155,195,195 };
         FillRect(hdc, &rc, br);
+
     }
     else if (ps == 4) {
         RECT rc = RECT{ 55,105,95,145 };
@@ -164,16 +166,18 @@ void DrawRc(HDC hdc, int ps, HBRUSH br) {
         RECT rc = RECT{ 155,105,195,145 };
         FillRect(hdc, &rc, br);
     }
-    else if (ps == 7) {
-        RECT rc = RECT{ 55,155,95,195 };
+    else if (ps == 7) {//op
+        RECT rc = RECT{ 55,55,95,95 };
+        FillRect(hdc, &rc, br);
+
+    }
+    else if (ps == 8) {//op
+
+        RECT rc = RECT{ 105,55,145,95 };
         FillRect(hdc, &rc, br);
     }
-    else if (ps == 8) {
-        RECT rc = RECT{ 105,155,145,195 };
-        FillRect(hdc, &rc, br);
-    }
-    else if (ps == 9) {
-        RECT rc = RECT{ 155,155,195,195 };
+    else if (ps == 9) {//op
+        RECT rc = RECT{ 155,55,195,95 };
         FillRect(hdc, &rc, br);
     }
 }
@@ -201,14 +205,14 @@ void DrawGreenUsed(HDC hdc) {
     FillRect(hdc, &rc2, green);
     TextOutA(hdc, 500, 250, "B", 2);
 }
-
+/*
 void DrawGrayUsed(HDC hdc) {
     RECT rc = RECT{ 490,190,560,260 };
     RECT rc2 = RECT{ 700,100,750,150 };
     Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
     FillRect(hdc, &rc2, green);
     TextOutA(hdc, 600, 250, "E", 2);
-}
+}*/
 
 void DrawYellowUsed(HDC hdc) {
     RECT rc = RECT{ 590,190,660,260 };
@@ -216,6 +220,14 @@ void DrawYellowUsed(HDC hdc) {
     Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
     FillRect(hdc, &rc2, yellow);
     TextOutA(hdc, 600, 250, "D", 2);
+}
+
+void DrawGrayUsed(HDC hdc) {
+    RECT rc = RECT{ 690,90,760,160 };
+    RECT rc2 = RECT{ 700,100,750,150 };
+    Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
+    FillRect(hdc, &rc2, gray);
+    TextOutA(hdc, 700, 150, "E", 2);
 }
 
 void DrawVoid(HDC hdc) {
@@ -232,17 +244,17 @@ void DrawHelp(HDC hdc) {
     RECT rc2 = RECT{ 500,200,550,250 };
     RECT rc3 = RECT{ 600,100,650,150 };
     RECT rc4= RECT{ 600,200,650,250 };
-   // RECT rc5 = RECT{ 700,100,750,150 };
+    RECT rc5 = RECT{ 700,100,750,150 };
     FillRect(hdc, &rc, red);
     FillRect(hdc, &rc2, green);
     FillRect(hdc, &rc3, blue);
     FillRect(hdc, &rc4, yellow);
-  //  FillRect(hdc, &rc5, gray);
+    FillRect(hdc, &rc5, gray);
     TextOutA(hdc, 500, 150, "A", 2);
     TextOutA(hdc, 500, 250, "B", 2);
     TextOutA(hdc, 600, 150, "C", 2);
     TextOutA(hdc, 600, 250, "D", 2);
-  //  TextOutA(hdc, 600, 250, "E", 2);
+    TextOutA(hdc, 700, 150, "E", 2);
 }
 
 // //debug message  - bez ok
@@ -297,7 +309,6 @@ HBRUSH CreateGradientBrush(COLORREF top, COLORREF bottom, LPNMCUSTOMDRAW item)
 
 void Generate() {
     srand(time(NULL));
-    int numRc = rand() % 3;
     for (int i = 0; i < 3; i++) {
         int pos = rand() % 9;
         int col = rand() % 4;//barva
@@ -316,4 +327,16 @@ bool Good(int in[4][9]) {
         }
     }
     return true;
+}
+
+
+void EraseHdc(HDC hdc, HWND hwnd) {
+    RECT rc;
+    GetClientRect(hwnd, &rc);
+    Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
+}
+void Erase2(HDC hdc) {
+    RECT rc = { 490,90,760,260 };
+    //Rectangle(hdc, 490, 90, 760, 260);
+    FillRect(hdc, &rc, white);
 }
