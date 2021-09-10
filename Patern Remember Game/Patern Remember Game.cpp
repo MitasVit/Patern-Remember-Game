@@ -4,6 +4,8 @@
 #include "framework.h"
 #include "Patern Remember Game.h"
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #pragma comment(linker,"\"/manifestdependency:type='win32' \
 name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
 processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"") 
@@ -184,7 +186,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         IndexFileCreate3(enter);
         IndexFileCreate();
-       HBITMAP play =  (HBITMAP)LoadImage(0, TEXT("C:\\Users\\Uzivatel\\Desktop\\2.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+        //zmenit na cestu ke vsemu
+#ifdef MUJ_COMP
+        HBITMAP play = (HBITMAP)LoadImage(0, TEXT("C:\\Users\\Uzivatel\\Desktop\\2.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+#else
+#pragma warning(suppress : 4996)
+        string tm = getenv("LOCALAPPDATA");
+        tm = tm + "/Programs/Patern Remember Game 1.1/2.bmp";
+        HBITMAP play = (HBITMAP)LoadImageA(0, tm.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+#endif 
+
+       
         Generate();
         IndexFileCreate2();
         GetClientRect(hWnd, &rc);
