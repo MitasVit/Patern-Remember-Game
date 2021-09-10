@@ -21,7 +21,7 @@ const wchar_t CLASS_NAME[] = L"Sample Window Class";
 HWND hWnd1;
 HWND hWnd2;
 
-HWND Button, Text;
+HWND Button, Text, Button2;
 HWND hWndProgressBar;
 
 // Předat dál deklarace funkcí zahrnuté v tomto modulu kódu:
@@ -29,6 +29,8 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK    No(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK    Right(HWND, UINT, WPARAM, LPARAM);
 
 LRESULT CALLBACK    WindowProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -163,6 +165,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     HDC hdc;
     POINT cursor;
     static bool draw = false;
+    static bool draw0 = true;
     static bool draw2 = false;
     static bool usedR = false;
     static bool usedB = false;
@@ -170,7 +173,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     static bool usedY = false;
     static bool usedGy = false;
     static bool load = false;
-    static int enter[4][9];
+    static int enter[5][9];
     static int sec = 0;
     static int pres2 = 0;
 
@@ -179,11 +182,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
     {
+       HBITMAP play =  (HBITMAP)LoadImage(0, TEXT("C:\\Users\\Uzivatel\\Desktop\\2.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
         Generate();
         GetClientRect(hWnd, &rc);
         int tmpW = rc.bottom;
         int tmpH = rc.right;
-        Text = CreateWindowEx(
+       /* Text = CreateWindowEx(
             WS_EX_CLIENTEDGE,
             TEXT("STATIC"),
             TEXT("Patern Remember Game"),
@@ -196,20 +200,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HMENU(NULL),
             GetModuleHandle(NULL),
             NULL);
-        
+        */
         Button = CreateWindow(
             L"BUTTON",
             L"Play",
-              WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON | BS_VCENTER,
+              WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON | BS_VCENTER | BS_BITMAP,
             350,         // x position 
             200,         // y position 
-            250,        // Button width
-            125,        // Button height
+            125,        // Button width
+            50,        // Button height
             hWnd,
             NULL,
             (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
             NULL);
+        SendMessageA(Button, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)play);
 
+       /* Button2 = CreateWindow(
+            L"BUTTON",
+            L"Minigame",
+            WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON | BS_VCENTER,
+            350,         // x position 
+            280,         // y position 
+            125,        // Button width
+            50,        // Button height
+            hWnd,
+            NULL,
+            (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
+            NULL);*/
+        
         //ShowCursor(false);
 #ifdef DEBUG
         string client_area = to_string(rc.bottom);
@@ -239,6 +257,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #endif 
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
+        case IDM_NO:
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_NO), hWnd, No);
+            break;
+        case IDM_RIGHT:
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_RIGHT), hWnd, Right);
+            break;
         case IDM_EXIT: //105
 #ifdef DEBUG
             MessageBox(NULL, L"exitting app", L"IDM_EXIT", MB_OK);
@@ -250,8 +274,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             MessageBox(NULL, L"play pressed", L"BN_CLICKED", MB_OK);
 #endif
             if (load == false) {
-                DestroyWindow(Text);
+                draw0 = false;
+                RedrawWindow(hWnd, 0, 0, RDW_INVALIDATE);
+                //DestroyWindow(Text);
                 DestroyWindow(Button);
+             //   DestroyWindow(Button2);
                 CreateWindow(
                     L"BUTTON",
                     L"check",
@@ -265,15 +292,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
                     NULL);
                 draw = true;
+
                 load = true;
                 RedrawWindow(hWnd, 0, 0, RDW_INVALIDATE);
             }
             else {
                 if (Good(enter) == true) {
-                    MessageBoxA(NULL, "You have all answers right, congratulation!", "Info", MB_OK);
+                    SendMessage(hWnd1, WM_COMMAND, IDM_RIGHT, 0);
+                   // MessageBoxA(NULL, "You have all answers right, congratulation!", "Info", MB_OK);
                 }
                 else {
-                    MessageBoxA(NULL, "You haven't got all answers right, never mind, it will be better next time!", "Info", MB_OK);
+                    SendMessage(hWnd1, WM_COMMAND, IDM_NO, 0);
+                   // MessageBoxA(NULL, "You haven't got all answers right, never mind, it will be better next time!", "Info", MB_OK);
                 }
                 /*if (enter[RED][1] == 1) {
                     if (enter[BLUE][5] == 1) {
@@ -317,7 +347,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_MOUSEMOVE:
     {
         //cursor move
+        /*  350,         // x position 
+            200,         // y position 
+            125,        // Button width
+            50,        // Button height*/
         GetCursorPos(&cursor);
+        if (load == false) {
+            if (cursor.x > 350 && cursor.y > 200 && cursor.x < 475 && cursor.y < 250) {
+                SetCursor(LoadCursor(nullptr, IDC_HAND));
+            }
+            else {
+                SetCursor(LoadCursor(nullptr, IDC_ARROW));
+            }
+        }
     }
     break;
     case WM_LBUTTONDOWN:
@@ -360,14 +402,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             usedY = true;
             InvalidateRect(hWnd, NULL, FALSE);
         }
-      /*  else if (wParam == 0x45) {//E
+        else if (wParam == 0x45) {//E
             usedR = false;
             usedB = false;
             usedG = false;
             usedY = false;
             usedGy = true;
             InvalidateRect(hWnd, NULL, FALSE);
-        }*/
+        }
         else if (wParam == 0x31 || wParam == 0x61) {//1
             pres2 = 1;
            if (usedR == true || usedB == true || usedY == true || usedG == true || usedGy == true) {
@@ -426,17 +468,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }break;
     case WM_PAINT:
     {
-
+        HFONT hFont = CreateFont(48, 0, 0, 0, FW_DONTCARE, FALSE, TRUE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
+            CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Times New Roman"));
         hdc = BeginPaint(hWnd, &ps);
+        if (draw0) {
+
+            SelectObject(hdc, hFont);
+
+            SetTextColor(hdc, RGB(29, 181, 34));
+         //   TextOut(hdc, 350, 100, L"", 20);
+            RECT rect = RECT{200,100,400,125};
+            DrawText(hdc, TEXT("Patern Remember Game"), -1, &rect, DT_NOCLIP);
+       //     DrawTextA(hdc, "Patern Remember Game", -1, )
+            SetTextColor(hdc, RGB(255, 255, 255));
+        }
         if (draw)
         {
+            GetClientRect(hWnd, &rc);
+            Rectangle(hdc, 0, 0, rc.right, rc.bottom);
             Draw3x3matrix(hdc);
             DrawRight(hdc);
             if (sec < 5) {
                 string _sec = to_string(sec);
                 wstring stemp = stringToWstring(_sec);
                 LPCWSTR result = stemp.c_str();
-                TextOut(hdc, 300, 150, result, 3);
+                TextOut(hdc, 300, 150, result, 1);
                 SetTimer(hWnd, IDT_TIMER2, 1000, (TIMERPROC)NULL);
             }
             else {
@@ -450,10 +506,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         else if (draw2) {
+
+           
             Draw3x3matrix(hdc);
             DrawHelp(hdc);
         }
         else if (usedR) { 
+            Erase2(hdc);
             Draw3x3matrix(hdc);
             RECT rect = { 480 , 80 , 670,270 };
             HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
@@ -468,6 +527,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         else if (usedB) { 
+            Erase2(hdc);
             Draw3x3matrix(hdc);
             RECT rect = { 480 , 80 , 670,270 };
             HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
@@ -482,6 +542,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         else if (usedG) { 
+            Erase2(hdc);
             Draw3x3matrix(hdc);
             RECT rect = { 480 , 80 , 670,270 };
             HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
@@ -496,6 +557,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         else if (usedY) {
+            Erase2(hdc);
             Draw3x3matrix(hdc);
             RECT rect = { 480 , 80 , 670,270 };
             HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
@@ -509,23 +571,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 pres2 = 0;
             }
         }
-        /*else if (usedGy) { 
-        Draw3x3matrix(hdc);
-        // + rectangles to game
-        RECT rect = { 480 , 80 , 870,470 };
-        HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
-        FillRect(hdc, &rect, brush);
-        DeleteObject(brush);
-        DrawHelp(hdc);
-        // DrawRed(hdc);
-        DrawGrayUsed(hdc);
-        if (pres2 != 0) {
-            DrawRc(hdc, pres2, gray);
-            pres2 = 0;
+        else if (usedGy) { 
+            Erase2(hdc);
+            Draw3x3matrix(hdc);
+            // + rectangles to game
+            RECT rect = { 480 , 80 , 870,470 };
+            HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
+            FillRect(hdc, &rect, brush);
+            DeleteObject(brush);
+            DrawHelp(hdc);
+            // DrawRed(hdc);
+            DrawGrayUsed(hdc);
+            if (pres2 != 0) {
+                DrawRc(hdc, pres2, white);
+                for (int i = 0; i < 4; i++) {
+                    enter[i][pres2] = 0;
+                }
+                pres2 = 0;
+            }
         }
-
-        }*/
-
+        DeleteObject(hFont);
         EndPaint(hWnd, &ps);
 
     }break;
@@ -559,7 +624,61 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return (INT_PTR)FALSE;
 }
 
+INT_PTR CALLBACK Right(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    UNREFERENCED_PARAMETER(lParam);
+    switch (message)
+    {
+    case WM_INITDIALOG:
+        return (INT_PTR)TRUE;
 
+    case WM_COMMAND:
+        if (LOWORD(wParam) == IDQUIT)
+        {
+            DestroyWindow(hWnd1);
+            EndDialog(hDlg, LOWORD(wParam));
+            return (INT_PTR)TRUE;
+        }
+       /* else if (LOWORD(wParam) == IDPA) {
+            MessageBox(NULL, L"T1", L"T1", MB_OK);
+            system("Patern Remember Game.exe");
+            EndDialog(hDlg, LOWORD(wParam));
+            return (INT_PTR)TRUE;
+        }*/
+        break;
+    }
+    return (INT_PTR)FALSE;
+}
+
+INT_PTR CALLBACK No(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    UNREFERENCED_PARAMETER(lParam);
+    switch (message)
+    {
+    case WM_INITDIALOG:
+        return (INT_PTR)TRUE;
+
+    case WM_COMMAND:
+        if (LOWORD(wParam) == IDQUIT)
+        {
+            DestroyWindow(hWnd1);
+            EndDialog(hDlg, LOWORD(wParam));
+            return (INT_PTR)TRUE;
+        }
+      /*  else if (LOWORD(wParam) == IDPA) {
+            MessageBox(NULL, L"T2", L"T2", MB_OK);
+            system("Patern Remember Game.exe");
+            EndDialog(hDlg, LOWORD(wParam));
+            return (INT_PTR)TRUE;
+        }*/
+        break;
+    case WM_DESTROY:
+        EndDialog(hDlg, LOWORD(wParam));
+        return (INT_PTR)TRUE;
+        break;
+    }
+    return (INT_PTR)FALSE;
+}
 
 
 

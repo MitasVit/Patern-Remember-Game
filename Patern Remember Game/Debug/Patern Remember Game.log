@@ -1,5 +1,5 @@
 ﻿  Patern Remember Game.cpp
 D:\C++PROGRAMUJU\Visual studio c++\Patern Remember Game\framework.h(8,1): warning C4005: _WIN32_WINNT: předefinování makra
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\SDKDDKVer.h(217): message : viz předchozí definice _WIN32_WINNT
-D:\C++PROGRAMUJU\Visual studio c++\Patern Remember Game\framework.h(299,15): warning C4244: argument: time_t se převádí na unsigned int; může dojít ke ztrátě dat.
+D:\C++PROGRAMUJU\Visual studio c++\Patern Remember Game\framework.h(311,15): warning C4244: argument: time_t se převádí na unsigned int; může dojít ke ztrátě dat.
   Patern Remember Game.vcxproj -> D:\C++PROGRAMUJU\Visual studio c++\Patern Remember Game\Debug\Patern Remember Game.exe
