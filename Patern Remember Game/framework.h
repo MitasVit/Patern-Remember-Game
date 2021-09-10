@@ -35,9 +35,9 @@ extern HBRUSH blue = CreateSolidBrush(RGB(24, 60, 219));
 extern HBRUSH white = CreateSolidBrush(RGB(255, 255, 255));
 extern HBRUSH yellow = CreateSolidBrush(RGB(227, 223, 11));
 extern HBRUSH gray = CreateSolidBrush(RGB(71, 79, 73));
-extern int good1[4][9] = { {0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0} };
+extern int good1[4] = { 0,0,0,0 };
 //3ctverecky, 1 pozice u kazdeho
-extern int good2[4][1] = { {0},{0},{0},{0} };
+extern int good2[4] = { 0,0,0,0 };
 //radky sloupce
 
 #define IDT_TIMER2    1005
@@ -46,10 +46,10 @@ extern int good2[4][1] = { {0},{0},{0},{0} };
 #define IDT_PROGRESS_TIMER 1003
 #define IDPB_PROGRESS_BAR  1004
 
-#define RED 1
-#define BLUE 2
-#define YELLOW 3
-#define GREEN 4
+#define RED 0
+#define BLUE 1
+#define YELLOW 2
+#define GREEN 3
 
 
 void DrawRc(HDC hdc, int ps, HBRUSH br);
@@ -128,16 +128,17 @@ void Draw3x3matrix(HDC hdc) {
 }
 
 void DrawRight(HDC hdc) {
-    RECT rc = RECT{ 55,55,95,95 };//vlevo nahore x +y vpravo dole x+ y
+   /* RECT rc = RECT{ 55,55,95,95 };//vlevo nahore x +y vpravo dole x+ y
     RECT rc2 = RECT{ 155,55,195,95 };
     RECT rc3 = RECT{ 105,105,145,145 };
     FillRect(hdc, &rc, red);
     FillRect(hdc, &rc2, green);
-    FillRect(hdc, &rc3, blue);
-    DrawRc(hdc, good2[RED][0], red);
-    DrawRc(hdc, good2[BLUE][0], blue);
-    DrawRc(hdc, good2[YELLOW][0], yellow);
-    DrawRc(hdc, good2[GREEN][0], green);
+    FillRect(hdc, &rc3, blue);*/
+        DrawRc(hdc, good2[RED], red);
+        DrawRc(hdc, good2[BLUE], blue);
+        DrawRc(hdc, good2[YELLOW], yellow);
+        DrawRc(hdc, good2[GREEN], green);
+    
 }
 
 void DrawRc(HDC hdc, int ps, HBRUSH br) {
@@ -312,19 +313,17 @@ void Generate() {
     for (int i = 0; i < 3; i++) {
         int pos = rand() % 9;
         int col = rand() % 4;//barva
-        good1[col][pos] = 1;
-        good2[col][0] = pos;
+        good1[col] = pos;
+        good2[col] = pos;
     }
 }
 
 
-bool Good(int in[4][9]) {
+bool Good(int in[4]) {
     for (int i = 0; i < 4; i++) {
-        for (int y = 0; y < 9; y++) {
-            if (in[i][y] != good1[i][y]) {
-                return false;
-            }
-        }
+        if (in[i] != good1[i]) {
+            return false;
+       }
     }
     return true;
 }
@@ -339,4 +338,53 @@ void Erase2(HDC hdc) {
     RECT rc = { 490,90,760,260 };
     //Rectangle(hdc, 490, 90, 760, 260);
     FillRect(hdc, &rc, white);
+}
+
+void IndexFileCreate() {
+    ofstream file("index.txt");
+    for (int i = 0; i < 4; i++) {
+        file << i << ": " << good2[i] <<endl;
+    }
+    for (int i = 0; i < 4; i++) {
+        file << i << ": " << good1[i] << endl;
+    }
+    file.close();
+}
+void IndexFileCreate2() {
+    ofstream file("index2.txt");
+    for (int i = 0; i < 4; i++) {
+        file << i << ": " << good2[i] << endl;
+    }
+    for (int i = 0; i < 4; i++) {
+        file << i <<  ": " << good1[i] << endl;
+    }
+    file.close();
+}
+void IndexFileCreate3(int in[4]) {
+    ofstream file("index3.txt");
+    for (int i = 0; i < 4; i++) {
+        file << i << ": " << good2[i] << endl;
+    }
+    for (int i = 0; i < 4; i++) {
+         file << i << ": " << good1[i] << endl;
+    }
+    for (int i = 0; i < 5; i++) {
+          file << i << ": " << in[i] << endl;
+    }
+    file.close();
+}
+void IndexFileCreate4(int in[4]) {
+    ofstream file("index4.txt");
+    for (int i = 0; i < 4; i++) {
+        file << i << ": " << good2[i] << endl;
+    }
+    for (int i = 0; i < 4; i++) {
+            file << i << ": " << good1[i] << endl;
+    }
+    for (int i = 0; i < 5; i++) {
+        for (int y = 0; y < 9; y++) {
+            file << i  << ": " << in[i] << endl;
+        }
+    }
+    file.close();
 }

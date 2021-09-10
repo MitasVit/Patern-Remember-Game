@@ -173,7 +173,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     static bool usedY = false;
     static bool usedGy = false;
     static bool load = false;
-    static int enter[5][9];
+    static int enter[4] = {0,0,0,0};
     static int sec = 0;
     static int pres2 = 0;
 
@@ -182,8 +182,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
     {
+        IndexFileCreate3(enter);
+        IndexFileCreate();
        HBITMAP play =  (HBITMAP)LoadImage(0, TEXT("C:\\Users\\Uzivatel\\Desktop\\2.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
         Generate();
+        IndexFileCreate2();
         GetClientRect(hWnd, &rc);
         int tmpW = rc.bottom;
         int tmpH = rc.right;
@@ -297,6 +300,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 RedrawWindow(hWnd, 0, 0, RDW_INVALIDATE);
             }
             else {
+                IndexFileCreate4(enter);
                 if (Good(enter) == true) {
                     SendMessage(hWnd1, WM_COMMAND, IDM_RIGHT, 0);
                    // MessageBoxA(NULL, "You have all answers right, congratulation!", "Info", MB_OK);
@@ -522,7 +526,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DrawRedUsed(hdc);
             if (pres2 != 0) {
                 DrawRc(hdc, pres2, red);
-                enter[RED][pres2] = 1;
+                enter[RED] = pres2;
                 pres2 = 0;
             }
         }
@@ -537,7 +541,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DrawBlueUsed(hdc);
             if (pres2 != 0) {
                 DrawRc(hdc, pres2, blue);
-                enter[BLUE][pres2] = 1;
+                enter[BLUE] = pres2;
                 pres2 = 0;
             }
         }
@@ -552,7 +556,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DrawGreenUsed(hdc);
             if (pres2 != 0) {
                 DrawRc(hdc, pres2, green);
-                enter[GREEN][pres2] = 1;
+                enter[GREEN] = pres2;
                 pres2 = 0;
             }
         }
@@ -567,7 +571,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DrawYellowUsed(hdc);
             if (pres2 != 0) {
                 DrawRc(hdc, pres2, yellow);
-                enter[YELLOW][pres2] = 1;
+                enter[YELLOW] = pres2;
                 pres2 = 0;
             }
         }
@@ -585,7 +589,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (pres2 != 0) {
                 DrawRc(hdc, pres2, white);
                 for (int i = 0; i < 4; i++) {
-                    enter[i][pres2] = 0;
+                    if (enter[i] == pres2) {
+                        enter[i] = 0;
+                    }
                 }
                 pres2 = 0;
             }
