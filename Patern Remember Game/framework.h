@@ -27,7 +27,14 @@
 #include <conio.h>
 
 
+
 using namespace std;
+
+
+#define MUJ_COMP
+//#define INDEX_DEBUG
+//#define DEBUG
+
 
 extern HBRUSH red = CreateSolidBrush(RGB(219, 37, 24));
 extern HBRUSH green = CreateSolidBrush(RGB(37, 219, 24));
@@ -35,10 +42,12 @@ extern HBRUSH blue = CreateSolidBrush(RGB(24, 60, 219));
 extern HBRUSH white = CreateSolidBrush(RGB(255, 255, 255));
 extern HBRUSH yellow = CreateSolidBrush(RGB(227, 223, 11));
 extern HBRUSH gray = CreateSolidBrush(RGB(71, 79, 73));
-extern int good1[4] = { 0,0,0,0 };
+extern int good1[8] = { 0,0,0,0,0,0,0,0 };
 //3ctverecky, 1 pozice u kazdeho
-extern int good2[4] = { 0,0,0,0 };
+extern int good2[8] = { 0,0,0,0,0,0,0,0 };
 //radky sloupce
+extern int enter[8] = { 0,0,0,0,0,0,0,0 };
+extern int diff = 1;
 
 #define IDT_TIMER2    1005
 #define IDT_TIMER3 1006
@@ -134,10 +143,22 @@ void DrawRight(HDC hdc) {
     FillRect(hdc, &rc, red);
     FillRect(hdc, &rc2, green);
     FillRect(hdc, &rc3, blue);*/
+    if (diff == 1) {
         DrawRc(hdc, good2[RED], red);
         DrawRc(hdc, good2[BLUE], blue);
         DrawRc(hdc, good2[YELLOW], yellow);
         DrawRc(hdc, good2[GREEN], green);
+    }
+    else if (diff == 2 || diff == 3) {
+        DrawRc(hdc, good2[RED], red);
+        DrawRc(hdc, good2[BLUE], blue);
+        DrawRc(hdc, good2[YELLOW], yellow);
+        DrawRc(hdc, good2[GREEN], green);
+        DrawRc(hdc, good2[RED + 5], red);
+        DrawRc(hdc, good2[BLUE + 5], blue);
+        DrawRc(hdc, good2[YELLOW + 5], yellow);
+        DrawRc(hdc, good2[GREEN + 5], green);
+    }
     
 }
 
@@ -310,17 +331,49 @@ HBRUSH CreateGradientBrush(COLORREF top, COLORREF bottom, LPNMCUSTOMDRAW item)
 
 void Generate() {
     srand(time(NULL));
-    for (int i = 0; i < 3; i++) {
-        int pos = rand() % 9;
-        int col = rand() % 4;//barva
-        good1[col] = pos;
-        good2[col] = pos;
+    if (diff == 1) {
+        for (int i = 0; i < 3; i++) {
+            int pos = rand() % 8;
+            int col = rand() % 3;//barva
+            good1[col] = pos;
+            good2[col] = pos;
+        }
+    }
+    else if (diff == 2) {
+        for (int i = 0; i < 5; i++) {
+            int pos = rand() % 8;
+            int col = rand() % 3;//barva
+            int y = rand() % 2;
+            if (y == 2) {
+                good1[col] = pos;
+                good2[col] = pos;
+            }
+            else {
+                good1[col + 5] = pos;
+                good2[col + 5] = pos;
+            }
+        }
+    }
+    else if (diff == 3) {
+        for (int i = 0; i < 7; i++) {
+            int pos = rand() % 8;
+            int col = rand() % 3;//barva
+            int y = rand() % 2;
+            if (y == 2) {
+                good1[col] = pos;
+                good2[col] = pos;
+            }
+            else {
+                good1[col + 5] = pos;
+                good2[col + 5] = pos;
+            }
+        }
     }
 }
 
 
-bool Good(int in[4]) {
-    for (int i = 0; i < 4; i++) {
+bool Good(int in[8]) {
+    for (int i = 0; i < 8; i++) {
         if (in[i] != good1[i]) {
             return false;
        }
@@ -342,49 +395,70 @@ void Erase2(HDC hdc) {
 
 void IndexFileCreate() {
     ofstream file("index.txt");
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
         file << i << ": " << good2[i] <<endl;
     }
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
         file << i << ": " << good1[i] << endl;
     }
     file.close();
 }
 void IndexFileCreate2() {
     ofstream file("index2.txt");
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
         file << i << ": " << good2[i] << endl;
     }
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
         file << i <<  ": " << good1[i] << endl;
     }
     file.close();
 }
 void IndexFileCreate3(int in[4]) {
     ofstream file("index3.txt");
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
         file << i << ": " << good2[i] << endl;
     }
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
          file << i << ": " << good1[i] << endl;
     }
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 8; i++) {
           file << i << ": " << in[i] << endl;
     }
     file.close();
 }
 void IndexFileCreate4(int in[4]) {
     ofstream file("index4.txt");
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
         file << i << ": " << good2[i] << endl;
     }
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
             file << i << ": " << good1[i] << endl;
     }
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 8; i++) {
         for (int y = 0; y < 9; y++) {
             file << i  << ": " << in[i] << endl;
         }
     }
     file.close();
+}
+
+void EraseAll(HWND hwnd1_) {
+    for (int i = 0; i < 8; i++) {
+        good1[i] = 0;
+        good2[i] = 0;
+        enter[i] = 0;
+    }
+    HDC hd = GetDC(hwnd1_);
+    Rectangle(hd, 0, 0, 1000, 1000);
+}
+
+inline bool FileExist(const std::string& name) {
+#pragma warning(suppress : 4996)
+    if (FILE* file = fopen(name.c_str(), "r")) {
+        fclose(file);
+        return true;
+    }
+    else {
+        return false;
+    }
 }

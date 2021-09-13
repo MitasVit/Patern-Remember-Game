@@ -3,6 +3,7 @@
 
 #include "framework.h"
 #include "Patern Remember Game.h"
+#include "resource.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -24,7 +25,19 @@ HWND hWnd1;
 HWND hWnd2;
 
 HWND Button, Text, Button2;
+HWND check, dif1, dif2, dif3;
 HWND hWndProgressBar;
+
+ bool draw = false;
+ bool draw0 = true;
+ bool draw2 = false;
+ bool usedR = false;
+ bool usedB = false;
+ bool usedG = false;
+ bool usedY = false;
+ bool usedGy = false;
+ bool load = false;
+ bool load2 = false;
 
 // Předat dál deklarace funkcí zahrnuté v tomto modulu kódu:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -166,16 +179,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     RECT rc;
     HDC hdc;
     POINT cursor;
-    static bool draw = false;
-    static bool draw0 = true;
-    static bool draw2 = false;
-    static bool usedR = false;
-    static bool usedB = false;
-    static bool usedG = false;
-    static bool usedY = false;
-    static bool usedGy = false;
-    static bool load = false;
-    static int enter[4] = {0,0,0,0};
+ 
+    static POINT p;
     static int sec = 0;
     static int pres2 = 0;
 
@@ -184,8 +189,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
     {
+#ifdef INDEX_DEBUG
         IndexFileCreate3(enter);
         IndexFileCreate();
+#endif
         //zmenit na cestu ke vsemu
 #ifdef MUJ_COMP
         HBITMAP play = (HBITMAP)LoadImage(0, TEXT("C:\\Users\\Uzivatel\\Desktop\\2.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
@@ -197,25 +204,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #endif 
 
        
-        Generate();
-        IndexFileCreate2();
+      //  Generate();
+
         GetClientRect(hWnd, &rc);
         int tmpW = rc.bottom;
         int tmpH = rc.right;
-       /* Text = CreateWindowEx(
-            WS_EX_CLIENTEDGE,
-            TEXT("STATIC"),
-            TEXT("Patern Remember Game"),
-            DS_3DLOOK | WS_CHILD | WS_VISIBLE | BS_VCENTER | DS_SHELLFONT,
-            350,
-            100,
-            200,
-            40,
-            hWnd,
-            HMENU(NULL),
-            GetModuleHandle(NULL),
-            NULL);
-        */
         Button = CreateWindow(
             L"BUTTON",
             L"Play",
@@ -229,21 +222,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
             NULL);
         SendMessageA(Button, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)play);
-
-       /* Button2 = CreateWindow(
-            L"BUTTON",
-            L"Minigame",
-            WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON | BS_VCENTER,
-            350,         // x position 
-            280,         // y position 
-            125,        // Button width
-            50,        // Button height
-            hWnd,
-            NULL,
-            (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
-            NULL);*/
-        
-        //ShowCursor(false);
 #ifdef DEBUG
         string client_area = to_string(rc.bottom);
         string client_area2 = to_string(rc.right);
@@ -278,6 +256,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case IDM_RIGHT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_RIGHT), hWnd, Right);
             break;
+        case ID_DIF1:
+            diff = 1;
+            load2 = true;
+            SendMessage(hWnd, WM_COMMAND, BN_CLICKED, 0);
+            break;
+        case ID_DIF2:
+            diff = 2;
+            load2 = true;
+            SendMessage(hWnd, WM_COMMAND, BN_CLICKED, 0);
+            break;
+        case ID_DIF3:
+            diff = 3;
+            load2 = true;
+            SendMessage(hWnd, WM_COMMAND, BN_CLICKED, 0);
+            break;
         case IDM_EXIT: //105
 #ifdef DEBUG
             MessageBox(NULL, L"exitting app", L"IDM_EXIT", MB_OK);
@@ -288,31 +281,86 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #ifdef DEBUG
             MessageBox(NULL, L"play pressed", L"BN_CLICKED", MB_OK);
 #endif
-            if (load == false) {
-                draw0 = false;
-                RedrawWindow(hWnd, 0, 0, RDW_INVALIDATE);
-                //DestroyWindow(Text);
-                DestroyWindow(Button);
-             //   DestroyWindow(Button2);
-                CreateWindow(
-                    L"BUTTON",
-                    L"check",
-                    WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON | BS_VCENTER,
-                    400,         // x position 
-                    270,         // y position 
-                    200,        // Button width
-                    100,        // Button height
-                    hWnd,
-                    NULL,
-                    (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
-                    NULL);
-                draw = true;
 
-                load = true;
-                RedrawWindow(hWnd, 0, 0, RDW_INVALIDATE);
+            if (load == false) {
+                if (load2 == false) {
+                    draw0 = false;
+                    RedrawWindow(hWnd, 0, 0, RDW_INVALIDATE);
+                    DestroyWindow(Button);
+
+                    dif1 = CreateWindow(
+                        L"BUTTON",
+                        L"difficulty 1",
+                        WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON | BS_VCENTER,
+                        350,         // x position 
+                        200,         // y position 
+                        125,        // Button width
+                        50,        // Button height
+                        hWnd,
+                        (HMENU)ID_DIF1,
+                        (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
+                        NULL);
+                    dif2 = CreateWindow(
+                        L"BUTTON",
+                        L"difficulty 2",
+                        WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON | BS_VCENTER,
+                        350,         // x position 
+                        260,         // y position 
+                        125,        // Button width
+                        50,        // Button height
+                        hWnd,
+                        (HMENU)ID_DIF2,
+                        NULL,
+                        (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
+                        NULL);
+                    dif3 = CreateWindow(
+                        L"BUTTON",
+                        L"difficulty 3",
+                        WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON | BS_VCENTER,
+                        350,         // x position 
+                        320,         // y position 
+                        125,        // Button width
+                        50,        // Button height
+                        hWnd,
+                        (HMENU)ID_DIF3,
+                        (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
+                        NULL);
+                }if (load2 == true) {
+                    Generate();
+#ifdef INDEX_DEBUG
+                    IndexFileCreate2();
+#endif
+#pragma warning(suppress : 4996)
+                    string tm = getenv("LOCALAPPDATA");
+                    tm = tm + "/Programs/Patern Remember Game 1.1/play.txt";
+                    if (FileExist(tm.c_str()) == false) {
+                        MessageBox(NULL, L"You have to remember the rectangles\nin the table(the color and position-by the numlock).\nYou have 5 seconds to do it.\nIf the screen is loaded and you see the\nempty table you will click the \"A\", this means\nyou have started to performancing the tabel\nto do this pres the letter for color and then number\non numlock for pos(pos in numlock keyboard).\nIf you are done you will click on \"check\".\nYou will see if you have all answers right and you \ncan quit or play again or show the right answers.", L"How to play", MB_OK);
+                    }
+                    DestroyWindow(dif1);
+                    DestroyWindow(dif2);
+                    DestroyWindow(dif3);
+                    check = CreateWindow(
+                        L"BUTTON",
+                        L"check",
+                        WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON | BS_VCENTER,
+                        400,         // x position 
+                        270,         // y position 
+                        200,        // Button width
+                        100,        // Button height
+                        hWnd,
+                        NULL,
+                        (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
+                        NULL);
+                    draw = true;
+
+                    load = true;
+                    RedrawWindow(hWnd, 0, 0, RDW_INVALIDATE);
+                }
             }
             else {
+#ifdef INDEX_DEBUG
                 IndexFileCreate4(enter);
+#endif
                 if (Good(enter) == true) {
                     SendMessage(hWnd1, WM_COMMAND, IDM_RIGHT, 0);
                    // MessageBoxA(NULL, "You have all answers right, congratulation!", "Info", MB_OK);
@@ -321,25 +369,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     SendMessage(hWnd1, WM_COMMAND, IDM_NO, 0);
                    // MessageBoxA(NULL, "You haven't got all answers right, never mind, it will be better next time!", "Info", MB_OK);
                 }
-                /*if (enter[RED][1] == 1) {
-                    if (enter[BLUE][5] == 1) {
-                        if (enter[GREEN][3] == 1) {
-                            MessageBoxA(NULL, "You have all answers right, congratulation!", "Info", MB_OK);
-                        }
-                        else {
-                            MessageBoxA(NULL, "You have 2 answers right, good result, little is enought for the best!", "Info", MB_OK);
-                        }
-                    }
-                    else {
-                        MessageBoxA(NULL, "You have 1 answers right, good result, but it can be even better!", "Info", MB_OK);
-                    }
-                }
-                else {
-                    MessageBoxA(NULL, "You have 0 answers right, never mind, it will be better next time!", "Info", MB_OK);
-                }**/
             }
-
-
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
@@ -504,7 +534,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             Rectangle(hdc, 0, 0, rc.right, rc.bottom);
             Draw3x3matrix(hdc);
             DrawRight(hdc);
-            if (sec < 5) {
+            int diff_time = 0;
+            if (diff == 1) {
+                diff_time = 5;
+            }
+            else if (diff == 2) {
+                diff_time = 7;
+            }
+            else if (diff == 3) {
+                diff_time = 9;
+            }
+            if (sec < diff_time) {
                 string _sec = to_string(sec);
                 wstring stemp = stringToWstring(_sec);
                 LPCWSTR result = stemp.c_str();
@@ -651,7 +691,29 @@ INT_PTR CALLBACK Right(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         return (INT_PTR)TRUE;
 
     case WM_COMMAND:
-        if (LOWORD(wParam) == IDQUIT)
+        if (LOWORD(wParam) == IDLOAD) {
+            HDC hd = GetDC(hDlg);
+            Draw3x3matrix(hd);
+            DrawRight(hd);
+        }
+        else if (LOWORD(wParam) == IDPLAY) {
+            draw = false;
+            draw0 = true;
+            draw2 = false;
+            usedR = false;
+            usedB = false;
+            usedG = false;
+            usedY = false;
+            usedGy = false;
+            load = false;
+            load2 = false;
+            EndDialog(hDlg, LOWORD(wParam));
+            DestroyWindow(check);
+            EraseAll(hWnd1);
+            SendMessage(hWnd1, WM_CREATE, 0, 0);
+            return (INT_PTR)TRUE;
+        }
+        else if (LOWORD(wParam) == IDQUIT)
         {
             DestroyWindow(hWnd1);
             EndDialog(hDlg, LOWORD(wParam));
@@ -674,10 +736,33 @@ INT_PTR CALLBACK No(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_INITDIALOG:
+
         return (INT_PTR)TRUE;
 
     case WM_COMMAND:
-        if (LOWORD(wParam) == IDQUIT)
+        if (LOWORD(wParam) == IDLOAD) {
+            HDC hd = GetDC(hDlg);
+            Draw3x3matrix(hd);
+            DrawRight(hd);
+        }
+        else if (LOWORD(wParam) == IDPLAY) {
+             draw = false;
+             draw0 = true;
+             draw2 = false;
+             usedR = false;
+             usedB = false;
+             usedG = false;
+             usedY = false;
+             usedGy = false;
+             load = false;
+             load2 = false;
+            EndDialog(hDlg, LOWORD(wParam));
+            DestroyWindow(check);
+            EraseAll(hWnd1);
+            SendMessage(hWnd1, WM_CREATE, 0, 0);
+            return (INT_PTR)TRUE;
+        }
+        else if (LOWORD(wParam) == IDQUIT)
         {
             DestroyWindow(hWnd1);
             EndDialog(hDlg, LOWORD(wParam));
