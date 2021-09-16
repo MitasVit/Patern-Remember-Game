@@ -42,13 +42,13 @@ extern HBRUSH blue = CreateSolidBrush(RGB(24, 60, 219));
 extern HBRUSH white = CreateSolidBrush(RGB(255, 255, 255));
 extern HBRUSH yellow = CreateSolidBrush(RGB(227, 223, 11));
 extern HBRUSH gray = CreateSolidBrush(RGB(71, 79, 73));
-extern int good1[8] = { 0,0,0,0,0,0,0,0 };
+extern int good1[9] = { 0,0,0,0,0,0,0,0,0 };
 //3ctverecky, 1 pozice u kazdeho
-extern int good2[8] = { 0,0,0,0,0,0,0,0 };
+extern int good2[9] = { 0,0,0,0,0,0,0,0,0 };
 //radky sloupce
-extern int enter[8] = { 0,0,0,0,0,0,0,0 };
+extern int enter[9] = { 0,0,0,0,0,0,0,0,0 };
 extern int diff = 1;
-
+int index = 0;
 #define IDT_TIMER2    1005
 #define IDT_TIMER3 1006
 #define IDT_TIMER          1002
@@ -333,7 +333,7 @@ void Generate() {
     srand(time(NULL));
     if (diff == 1) {
         for (int i = 0; i < 3; i++) {
-            int pos = rand() % 8;
+            int pos = rand() % 9;
             int col = rand() % 3;//barva
             good1[col] = pos;
             good2[col] = pos;
@@ -341,7 +341,7 @@ void Generate() {
     }
     else if (diff == 2) {
         for (int i = 0; i < 5; i++) {
-            int pos = rand() % 8;
+            int pos = rand() % 9;
             int col = rand() % 3;//barva
             int y = rand() % 2;
             if (y == 2) {
@@ -356,7 +356,7 @@ void Generate() {
     }
     else if (diff == 3) {
         for (int i = 0; i < 7; i++) {
-            int pos = rand() % 8;
+            int pos = rand() % 9;
             int col = rand() % 3;//barva
             int y = rand() % 2;
             if (y == 2) {
@@ -442,6 +442,16 @@ void IndexFileCreate4(int in[4]) {
     file.close();
 }
 
+void IndexFileCreate5() {
+    ofstream file("index5.txt");
+    for (int i = 0; i < 9; i++) {
+        file << i << ": " << good2[i] << endl;
+    }
+    for (int i = 0; i < 9; i++) {
+        file << i << ": " << good1[i] << endl;
+    }
+    file.close();
+}
 void EraseAll(HWND hwnd1_) {
     for (int i = 0; i < 8; i++) {
         good1[i] = 0;
@@ -461,4 +471,32 @@ inline bool FileExist(const std::string& name) {
     else {
         return false;
     }
+}
+
+//text1 - good, text2 - bad
+//
+void load_text(string text1, string text2) {
+    string gpath = "C:/Program Files/Patern Remember Game/good.txt";
+    string bpath = "C:/Program Files/Patern Remember Game/bad.txt";
+    string tmp[6];
+    string tmp2[6];
+    if (FileExist(gpath) == false) {
+        MessageBox(NULL, L"The C:/Program Files/Patern Remember Game/good.txt doesn't exist!\nThis application may not work properly, please contact application support.", L"Alert", MB_OK | MB_ICONWARNING);
+        text1 = "Excellent!";
+    }
+    else if (FileExist(bpath) == false) {
+        MessageBox(NULL, L"The C:/Program Files/Patern Remember Game/bad.txt doesn't exist!\nThis application may not work properly, please contact application support.", L"Alert", MB_OK | MB_ICONWARNING);
+        text2 = "Bad...";
+    }
+    else {
+        ifstream good(gpath);
+        ifstream bad(bpath);
+        for (int i = 0; i < 6; i++) {
+            getline(good, tmp[i]);
+            getline(bad, tmp2[i]);
+        }
+        good.close();
+        bad.close();
+    }
+
 }

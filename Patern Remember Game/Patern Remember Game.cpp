@@ -27,6 +27,7 @@ HWND hWnd2;
 HWND Button, Text, Button2;
 HWND check, dif1, dif2, dif3;
 HWND hWndProgressBar;
+string txt1, txt2;
 
  bool draw = false;
  bool draw0 = true;
@@ -38,6 +39,8 @@ HWND hWndProgressBar;
  bool usedGy = false;
  bool load = false;
  bool load2 = false;
+ bool draw3 = false;
+ int diff_time = 0;
 
 // Předat dál deklarace funkcí zahrnuté v tomto modulu kódu:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -58,8 +61,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
-
-    // TODO: Sem umístěte kód.
 
     // Inicializovat globální řetězce
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -91,12 +92,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 }
 
 
-
-//
-//  FUNKCE: MyRegisterClass()
-//
-//  ÚČEL: Zaregistruje třídu okna.
-//
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
 
@@ -128,16 +123,6 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     return RegisterClassExW(&wcex);
 }
 
-//
-//   FUNKCE: InitInstance(HINSTANCE, int)
-//
-//   ÚČEL: Uloží popisovač instance a vytvoří hlavní okno.
-//
-//   KOMENTÁŘE:
-//
-//        V této funkci uložíme popisovač instance do globální proměnné
-//        a vytvoříme a zobrazíme hlavní okno programu.
-//
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     hInst = hInstance; // Uloží popisovač instance do naší globální proměnné.
@@ -163,16 +148,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     return TRUE;
 }
 
-//
-//  FUNKCE: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  ÚČEL: Zpracuje zprávy pro hlavní okno.
-//
-//  WM_COMMAND  - zpracování aplikační nabídky
-//  WM_PAINT    - Vykreslení hlavního okna
-//  WM_DESTROY  - vystavení zprávy o ukončení a návrat
-//
-//
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
@@ -198,8 +173,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         HBITMAP play = (HBITMAP)LoadImage(0, TEXT("C:\\Users\\Uzivatel\\Desktop\\2.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 #else
 #pragma warning(suppress : 4996)
-        string tm = getenv("LOCALAPPDATA");
-        tm = tm + "/Programs/Patern Remember Game 1.1/2.bmp";
+        string tm = "C:/Program Files/Patern Remember Game/2.bmp";
         HBITMAP play = (HBITMAP)LoadImageA(0, tm.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 #endif 
 
@@ -241,7 +215,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
-        // Analyzovat vybrané možnosti nabídky:
         switch (wmId)
         {
         case IDM_ABOUT: //104
@@ -251,9 +224,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
         case IDM_NO:
+          //  load_text(txt1, txt2);
             DialogBox(hInst, MAKEINTRESOURCE(IDD_NO), hWnd, No);
             break;
         case IDM_RIGHT:
+          //  load_text(txt1, txt2);
             DialogBox(hInst, MAKEINTRESOURCE(IDD_RIGHT), hWnd, Right);
             break;
         case ID_DIF1:
@@ -285,9 +260,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (load == false) {
                 if (load2 == false) {
                     draw0 = false;
+                    draw3 = true;
                     RedrawWindow(hWnd, 0, 0, RDW_INVALIDATE);
                     DestroyWindow(Button);
-
                     dif1 = CreateWindow(
                         L"BUTTON",
                         L"difficulty 1",
@@ -327,15 +302,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         NULL);
                 }if (load2 == true) {
                     Generate();
+
 #ifdef INDEX_DEBUG
+                    IndexFileCreate5();
                     IndexFileCreate2();
 #endif
 #pragma warning(suppress : 4996)
-                    string tm = getenv("LOCALAPPDATA");
-                    tm = tm + "/Programs/Patern Remember Game 1.1/play.txt";
+                    //C:\Program Files
+                    string tm = "C:/Program Files/Patern Remember Game/play.txt";
                     if (FileExist(tm.c_str()) == false) {
                         MessageBox(NULL, L"You have to remember the rectangles\nin the table(the color and position-by the numlock).\nYou have 5 seconds to do it.\nIf the screen is loaded and you see the\nempty table you will click the \"A\", this means\nyou have started to performancing the tabel\nto do this pres the letter for color and then number\non numlock for pos(pos in numlock keyboard).\nIf you are done you will click on \"check\".\nYou will see if you have all answers right and you \ncan quit or play again or show the right answers.", L"How to play", MB_OK);
                     }
+                    draw3 = false;
+                    RedrawWindow(hWnd, 0, 0, RDW_INVALIDATE);
                     DestroyWindow(dif1);
                     DestroyWindow(dif2);
                     DestroyWindow(dif3);
@@ -397,15 +376,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             200,         // y position 
             125,        // Button width
             50,        // Button height*/
-        GetCursorPos(&cursor);
+
+
+       /* GetCursorPos(&cursor);
         if (load == false) {
             if (cursor.x > 350 && cursor.y > 200 && cursor.x < 475 && cursor.y < 250) {
-                SetCursor(LoadCursor(nullptr, IDC_HAND));
+                //SetCursor(LoadCursor(nullptr, IDC_HAND));
+                MessageBox(NULL, L"na play", L"info", MB_OK);
             }
             else {
                 SetCursor(LoadCursor(nullptr, IDC_ARROW));
             }
-        }
+        }*/
     }
     break;
     case WM_LBUTTONDOWN:
@@ -517,15 +499,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         HFONT hFont = CreateFont(48, 0, 0, 0, FW_DONTCARE, FALSE, TRUE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
             CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Times New Roman"));
         hdc = BeginPaint(hWnd, &ps);
+        if (draw3) {
+            SelectObject(hdc, hFont);
+            SetTextColor(hdc, RGB(29, 181, 34));
+            RECT rect = RECT{ 200,100,400,125 };
+            DrawText(hdc, TEXT("Select a difficult"), -1, &rect, DT_NOCLIP);
+            SetTextColor(hdc, RGB(255, 255, 255));
+
+        }
         if (draw0) {
 
             SelectObject(hdc, hFont);
-
             SetTextColor(hdc, RGB(29, 181, 34));
-         //   TextOut(hdc, 350, 100, L"", 20);
             RECT rect = RECT{200,100,400,125};
             DrawText(hdc, TEXT("Patern Remember Game"), -1, &rect, DT_NOCLIP);
-       //     DrawTextA(hdc, "Patern Remember Game", -1, )
             SetTextColor(hdc, RGB(255, 255, 255));
         }
         if (draw)
@@ -534,21 +521,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             Rectangle(hdc, 0, 0, rc.right, rc.bottom);
             Draw3x3matrix(hdc);
             DrawRight(hdc);
-            int diff_time = 0;
             if (diff == 1) {
-                diff_time = 5;
+                diff_time = 8;
             }
             else if (diff == 2) {
-                diff_time = 7;
+                diff_time = 6;
             }
             else if (diff == 3) {
-                diff_time = 9;
+                diff_time = 4;
             }
             if (sec < diff_time) {
-                string _sec = to_string(sec);
+                string _sec = to_string(sec) + "/" + to_string(diff_time);
                 wstring stemp = stringToWstring(_sec);
                 LPCWSTR result = stemp.c_str();
-                TextOut(hdc, 300, 150, result, 1);
+                TextOut(hdc, 300, 150, result, 3);
                 SetTimer(hWnd, IDT_TIMER2, 1000, (TIMERPROC)NULL);
             }
             else {
@@ -562,8 +548,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         else if (draw2) {
-
-           
             Draw3x3matrix(hdc);
             DrawHelp(hdc);
         }
@@ -688,6 +672,7 @@ INT_PTR CALLBACK Right(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_INITDIALOG:
+       // SetDlgItemTextA(hDlg, ID_TX2, txt1.c_str());
         return (INT_PTR)TRUE;
 
     case WM_COMMAND:
@@ -707,6 +692,7 @@ INT_PTR CALLBACK Right(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             usedGy = false;
             load = false;
             load2 = false;
+            diff_time = 0;
             EndDialog(hDlg, LOWORD(wParam));
             DestroyWindow(check);
             EraseAll(hWnd1);
@@ -736,7 +722,7 @@ INT_PTR CALLBACK No(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_INITDIALOG:
-
+       // SetDlgItemTextA(hDlg, ID_TX, txt2.c_str());
         return (INT_PTR)TRUE;
 
     case WM_COMMAND:
@@ -756,6 +742,7 @@ INT_PTR CALLBACK No(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
              usedGy = false;
              load = false;
              load2 = false;
+             diff_time = 0;
             EndDialog(hDlg, LOWORD(wParam));
             DestroyWindow(check);
             EraseAll(hWnd1);

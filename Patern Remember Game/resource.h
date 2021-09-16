@@ -27,7 +27,9 @@
 #define ID_DIF1                         137
 #define ID_DIF2                         138
 #define ID_DIF3                         139
-
+#define ID_T							140
+#define ID_TX							142
+#define ID_TX2							143
 
 // Next default values for new objects
 // 
