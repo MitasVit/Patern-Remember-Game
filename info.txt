@@ -1,0 +1,2 @@
+v1.3
+https://codeload.github.com/MitasVit/Patern-Remember-Game/zip/refs/tags/v1.3
