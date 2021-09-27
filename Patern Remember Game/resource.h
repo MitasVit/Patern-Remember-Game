@@ -31,6 +31,17 @@
 #define ID_TX							142
 #define ID_TX2							143
 
+#define IDB_PLAY                         146
+
+#define ID_CLOSE						144
+#define ID_EXIT							145
+
+#define ID_BLUE							147
+#define ID_YELLOW						148
+#define ID_GREEN						149
+#define ID_RED	     					150
+#define ID_ERASE						151
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

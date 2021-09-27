@@ -151,12 +151,13 @@
     <ResourceCompile Include="Patern Remember Game.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="2.bmp" />
     <Image Include="icon1.ico" />
     <Image Include="Patern Remember Game.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="lol.AVI" />
+    <Xml Include="manifest.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

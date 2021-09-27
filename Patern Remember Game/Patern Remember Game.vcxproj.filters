@@ -48,8 +48,13 @@
     <Image Include="icon1.ico">
       <Filter>Soubory zdrojů</Filter>
     </Image>
+    <Image Include="2.bmp">
+      <Filter>Soubory zdrojů</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="lol.AVI" />
+    <Xml Include="manifest.xml">
+      <Filter>Hlavičkové soubory</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

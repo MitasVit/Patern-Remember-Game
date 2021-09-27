@@ -5,6 +5,8 @@
 #include "Patern Remember Game.h"
 #include "resource.h"
 
+#pragma comment(lib, "Dwmapi.lib")
+
 #define _CRT_SECURE_NO_WARNINGS
 
 #pragma comment(linker,"\"/manifestdependency:type='win32' \
@@ -105,7 +107,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     RegisterClass(&wc);
 
     WNDCLASSEXW wcex;
-
+    HBRUSH br = CreateSolidBrush(RGB(255, 255, 255));
     wcex.cbSize = sizeof(WNDCLASSEX);
 
     wcex.style = CS_HREDRAW | CS_VREDRAW;
@@ -115,7 +117,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance = hInstance;
     wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PATERNREMEMBERGAME));
     wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.hbrBackground = br;
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_PATERNREMEMBERGAME);
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -126,10 +128,11 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     hInst = hInstance; // Uloží popisovač instance do naší globální proměnné.
-
     hWnd1 = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
-
+    COLORREF NewColor = RGB(255, 255, 255);
+    int flag = COLOR_CAPTIONTEXT;
+    ::SetSysColors(1, &flag, &NewColor);
     if (!hWnd1)
     {
         return FALSE;
@@ -137,7 +140,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
     hWnd2 = CreateWindowW(CLASS_NAME, L"loading", WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, 0, 250, 250, nullptr, nullptr, g_hinst, nullptr);
-
 
     ShowWindow(hWnd2, nCmdShow);
 
@@ -154,28 +156,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     RECT rc;
     HDC hdc;
     POINT cursor;
+    RECT pos;
+    RECT size;
  
     static POINT p;
     static int sec = 0;
     static int pres2 = 0;
-
+    bool onB = false;
 
     switch (message)
     {
     case WM_CREATE:
     {
+
 #ifdef INDEX_DEBUG
         IndexFileCreate3(enter);
         IndexFileCreate();
 #endif
-        //zmenit na cestu ke vsemu
-#ifdef MUJ_COMP
-        HBITMAP play = (HBITMAP)LoadImage(0, TEXT("C:\\Users\\Uzivatel\\Desktop\\2.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+//#ifdef MUJ_COMP
+        HBITMAP play = LoadBitmap((HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE), MAKEINTRESOURCE(IDB_PLAY)); //Here we have to use the executable module to load our bitmap resource
+       /* HBITMAP play = (HBITMAP)LoadImage(0, TEXT("C:\\Users\\Uzivatel\\Desktop\\2.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 #else
 #pragma warning(suppress : 4996)
         string tm = "C:/Program Files/Patern Remember Game/2.bmp";
         HBITMAP play = (HBITMAP)LoadImageA(0, tm.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-#endif 
+#endif */
 
        
       //  Generate();
@@ -211,12 +216,56 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         hdc = BeginPaint(hWnd, &ps);
     }break;
-
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
         switch (wmId)
         {
+        case ID_BLUE:
+            draw2 = false;
+            usedR = false;
+            usedB = true;
+            usedG = false;
+            usedY = false;
+            usedGy = false;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        case ID_RED:
+            draw2 = false;
+            usedR = true;
+            usedB = false;
+            usedG = false;
+            usedY = false;
+            usedGy = false;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        case ID_YELLOW:
+            draw2 = false;
+            usedR = false;
+            usedB = false;
+            usedG = false;
+            usedY = true;
+            usedGy = false;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        case ID_GREEN:
+            draw2 = false;
+            usedR = false;
+            usedB = false;
+            usedG = true;
+            usedY = false;
+            usedGy = false;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
+        case ID_ERASE:
+            draw2 = false;
+            usedR = false;
+            usedB = false;
+            usedG = false;
+            usedY = false;
+            usedGy = true;
+            InvalidateRect(hWnd, NULL, FALSE);
+            break;
         case IDM_ABOUT: //104
 #ifdef DEBUG
             MessageBox(NULL, L"about button in menu pressed", L"IDM_ABOUT", MB_OK);
@@ -302,7 +351,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         NULL);
                 }if (load2 == true) {
                     Generate();
-
 #ifdef INDEX_DEBUG
                     IndexFileCreate5();
                     IndexFileCreate2();
@@ -368,30 +416,226 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }break;
         }
     }break;
-
-    case WM_MOUSEMOVE:
+    case WM_CONTEXTMENU:
     {
-        //cursor move
-        /*  350,         // x position 
-            200,         // y position 
-            125,        // Button width
-            50,        // Button height*/
+        pos.left = 0;
+        pos.bottom = 0;
+        pos.right = 0;
+        pos.top = 0;
+        cursor.x = 0;
+        cursor.y = 0;
 
-
-       /* GetCursorPos(&cursor);
-        if (load == false) {
-            if (cursor.x > 350 && cursor.y > 200 && cursor.x < 475 && cursor.y < 250) {
-                //SetCursor(LoadCursor(nullptr, IDC_HAND));
-                MessageBox(NULL, L"na play", L"info", MB_OK);
-            }
-            else {
-                SetCursor(LoadCursor(nullptr, IDC_ARROW));
-            }
-        }*/
-    }
-    break;
+        GetCursorPos(&cursor);
+        GetWindowRect(hWnd, &pos);
+        HMENU hPopupMenu = CreatePopupMenu();
+        InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_ABOUT, _T("About"));
+        InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_EXIT, _T("Exit"));
+        if (cursor.y > (pos.top + 195) && cursor.x > (pos.left + 55) && cursor.y < (pos.top + 235) && cursor.x < (pos.left + 95)) {
+            pres2 = 1;
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+        }
+        else if (cursor.y > (pos.top + 195) && cursor.x > (pos.left + 105) && cursor.y < (pos.top + 235) && cursor.x < (pos.left + 145)) {
+            pres2 = 2;
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+        }
+        else if (cursor.y > (pos.top + 195) && cursor.x > (pos.left + 155) && cursor.y < (pos.top + 235) && cursor.x < (pos.left + 195)) {
+            pres2 = 3;
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+            
+        }
+        else if (cursor.y > (pos.top + 155) && cursor.x > (pos.left + 55) && cursor.y < (pos.top + 195) && cursor.x < (pos.left + 95)) {
+            pres2 = 4;
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+            
+        }
+        else if (cursor.y > (pos.top + 155) && cursor.x > (pos.left + 105) && cursor.y < (pos.top + 185) && cursor.x < (pos.left + 145)) {
+            pres2 = 5;
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+            
+        }
+        else if (cursor.y > (pos.top + 145) && cursor.x > (pos.left + 155) && cursor.y < (pos.top + 195) && cursor.x < (pos.left + 195)) {
+            pres2 = 6;
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+            
+        }
+        else if (cursor.y > (pos.top + 95) && cursor.x > (pos.left + 55) && cursor.y < (pos.top + 135) && cursor.x < (pos.left + 95)) {
+            pres2 = 7;
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+            
+        }
+        else if (cursor.y > (pos.top + 95) && cursor.x > (pos.left + 105) && cursor.y < (pos.top + 135) && cursor.x < (pos.left + 145)) {
+            pres2 = 8;
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+            
+        }
+        else if (cursor.y > (pos.top + 95) && cursor.x > (pos.left + 155) && cursor.y < (pos.top + 135) && cursor.x < (pos.left + 195)) {
+            pres2 = 9;
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+            
+        }
+        SetForegroundWindow(hWnd);
+        TrackPopupMenu(hPopupMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN, cursor.x, cursor.y, 0, hWnd, NULL);
+    }break;
     case WM_LBUTTONDOWN:
     {
+        pos.left = 0;
+        pos.bottom = 0;
+        pos.right = 0;
+        pos.top = 0;
+        cursor.x = 0;
+        cursor.y = 0;
+        
+        GetCursorPos(&cursor);
+        GetWindowRect(hWnd, &pos);
+        string tmp4 = ToString(pos.left);
+        tmp4 = tmp4 + "-left, " + ToString(pos.bottom) + "-bottom, " + ToString(pos.right) + "-right, " + ToString(pos.top) + "-top";
+        string tmp1 = ToString(cursor.x), tmp2 = ToString(cursor.y);
+        tmp1 = tmp1 + "x";
+        tmp2 = tmp2 + "y";
+        string tmp3 = tmp1 + tmp2;
+
+#ifdef DEBUG
+        MessageBoxA(NULL, tmp3.c_str(), "Cursor position", MB_OK);//DEBUG
+        MessageBoxA(NULL, tmp4.c_str(), "Window position", MB_OK);//DEBUG
+#endif
+        if (cursor.y > (pos.top + 100 +40) && cursor.x > (pos.left + 500 ) && cursor.y < (pos.top + 150+40) && cursor.x < (pos.left + 550)) {
+#ifdef DEBUG
+            MessageBoxA(NULL, "YES", "YES", MB_OK);
+#endif
+            draw2 = false;
+            usedR = true;
+            usedB = false;
+            usedG = false;
+            usedY = false;
+            usedGy = false;
+            InvalidateRect(hWnd, NULL, FALSE);
+        }else if (cursor.y > (pos.top + 200 + 40) && cursor.x > (pos.left + 500) && cursor.y < (pos.top + 250 +40) && cursor.x < (pos.left + 550)) {
+            draw2 = false;
+            usedR = false;
+            usedB = false;
+            usedG = true;
+            usedY = false;
+            usedGy = false;
+            InvalidateRect(hWnd, NULL, FALSE);
+        }
+        else if (cursor.y > (pos.top + 200 + 40) && cursor.x > (pos.left + 600) && cursor.y < (pos.top + 250 + 40) && cursor.x < (pos.left + 650)) {
+            draw2 = false;
+            usedR = false;
+            usedB = false;
+            usedG = false;
+            usedY = true;
+            usedGy = false;
+            InvalidateRect(hWnd, NULL, FALSE);
+        }
+        else if (cursor.y > (pos.top + 140) && cursor.x > (pos.left + 600) && cursor.y < (pos.top + 190) && cursor.x < (pos.left + 650)) {
+            draw2 = false;
+            usedR = false;
+            usedB = true;
+            usedG = false;
+            usedY = false;
+            usedGy = false;
+            InvalidateRect(hWnd, NULL, FALSE);
+        }
+        else if (cursor.y > (pos.top + 140) && cursor.x > (pos.left + 700) && cursor.y < (pos.top + 190) && cursor.x < (pos.left + 750)) {
+            draw2 = false;
+            usedR = false;
+            usedB = false;
+            usedG = false;
+            usedY = false;
+            usedGy = true;
+            InvalidateRect(hWnd, NULL, FALSE);
+        }
+        else if (cursor.y > (pos.top + 195) && cursor.x > (pos.left + 55) && cursor.y < (pos.top + 235) && cursor.x < (pos.left + 95)) {
+            pres2 = 1;
+            if (usedR == true || usedB == true || usedY == true || usedG == true || usedGy == true) {
+                InvalidateRect(hWnd, NULL, FALSE);
+            }
+        }
+        else if (cursor.y > (pos.top + 195) && cursor.x > (pos.left + 105) && cursor.y < (pos.top + 235) && cursor.x < (pos.left + 145)) {
+            pres2 = 2;
+            if (usedR == true || usedB == true || usedY == true || usedG == true || usedGy == true) {
+                InvalidateRect(hWnd, NULL, FALSE);
+            }
+        }
+        else if (cursor.y > (pos.top + 195) && cursor.x > (pos.left + 155) && cursor.y < (pos.top + 235) && cursor.x < (pos.left + 195)) {
+            pres2 = 3;
+            if (usedR == true || usedB == true || usedY == true || usedG == true || usedGy == true) {
+                InvalidateRect(hWnd, NULL, FALSE);
+            }
+        }
+        else if (cursor.y > (pos.top + 155) && cursor.x > (pos.left + 55) && cursor.y < (pos.top + 195) && cursor.x < (pos.left + 95)) {
+            pres2 = 4;
+            if (usedR == true || usedB == true || usedY == true || usedG == true || usedGy == true) {
+                InvalidateRect(hWnd, NULL, FALSE);
+            }
+        }
+        else if (cursor.y > (pos.top + 155) && cursor.x > (pos.left + 105) && cursor.y < (pos.top + 185) && cursor.x < (pos.left + 145)) {
+            pres2 = 5;
+            if (usedR == true || usedB == true || usedY == true || usedG == true || usedGy == true) {
+                InvalidateRect(hWnd, NULL, FALSE);
+            }
+        }
+        else if (cursor.y > (pos.top + 145) && cursor.x > (pos.left + 155) && cursor.y < (pos.top + 195) && cursor.x < (pos.left + 195)) {
+            pres2 = 6;
+            if (usedR == true || usedB == true || usedY == true || usedG == true || usedGy == true) {
+                InvalidateRect(hWnd, NULL, FALSE);
+            }
+        }
+        else if (cursor.y > (pos.top + 95) && cursor.x > (pos.left + 55) && cursor.y < (pos.top + 135) && cursor.x < (pos.left + 95)) {
+            pres2 = 7;
+            if (usedR == true || usedB == true || usedY == true || usedG == true || usedGy == true) {
+                InvalidateRect(hWnd, NULL, FALSE);
+            }
+        }
+        else if (cursor.y > (pos.top + 95) && cursor.x > (pos.left + 105) && cursor.y < (pos.top + 135) && cursor.x < (pos.left + 145)) {
+            pres2 = 8;
+            if (usedR == true || usedB == true || usedY == true || usedG == true || usedGy == true) {
+                InvalidateRect(hWnd, NULL, FALSE);
+            }
+        }
+        else if (cursor.y > (pos.top + 95) && cursor.x > (pos.left + 155) && cursor.y < (pos.top + 135) && cursor.x < (pos.left + 195)) {
+            pres2 = 9;
+            if (usedR == true || usedB == true || usedY == true || usedG == true || usedGy == true) {
+                InvalidateRect(hWnd, NULL, FALSE);
+            }
+        }
+
     }break;
     case WM_KEYDOWN:
     {
@@ -496,6 +740,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }break;
     case WM_PAINT:
     {
+
         HFONT hFont = CreateFont(48, 0, 0, 0, FW_DONTCARE, FALSE, TRUE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
             CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Times New Roman"));
         hdc = BeginPaint(hWnd, &ps);

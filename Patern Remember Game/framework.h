@@ -25,7 +25,17 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include <conio.h>
+#include <dwmapi.h>
+#include <string>
+#include <sstream>
 
+using namespace std;
+
+string ToString(int x) {
+    stringstream ss;
+    ss << x;
+    return ss.str();
+}
 
 
 using namespace std;
@@ -499,4 +509,25 @@ void load_text(string text1, string text2) {
         bad.close();
     }
 
+}
+
+HRESULT EnableBlurBehind(HWND hwnd)
+{
+    HRESULT hr = S_OK;
+
+    // Create and populate the blur-behind structure.
+    DWM_BLURBEHIND bb = { 0 };
+
+    // Specify blur-behind and blur region.
+    bb.dwFlags = DWM_BB_ENABLE;
+    bb.fEnable = true;
+    bb.hRgnBlur = NULL;
+
+    // Enable blur-behind.
+    hr = DwmEnableBlurBehindWindow(hwnd, &bb);
+    if (SUCCEEDED(hr))
+    {
+        // ...
+    }
+    return hr;
 }
