@@ -2,15 +2,16 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Patern Remember Game"
-#define MyAppVersion "1.0"
+#define MyAppVersion "1.3"
 #define MyAppPublisher "Mitas Vit"
-#define MyAppURL "https://lfvmhry.wixsite.com/paternremembergame"
+#define MyAppURL "https://github.com/MitasVit/Patern-Remember-Game"
 #define MyAppExeName "Patern Remember Game.exe"
+
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{F09263CD-6809-4DD0-A899-E66098667C67}
+AppId={{FC82E494-9B38-43FC-9942-79EF04EB472B}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -20,45 +21,50 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\Uzivatel\Desktop\patern remember\MIT License.txt
+LicenseFile=C:\Users\Uzivatel\Desktop\1.3\MIT License.txt
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
 OutputDir=C:\Users\Uzivatel\Desktop
-OutputBaseFilename=Pattern Remeber Game
-SetupIconFile=C:\Users\Uzivatel\Desktop\patern remember\Patern Remember Game.ico
+OutputBaseFilename=Install Patern Remember Game 1.3
+SetupIconFile=C:\Users\Uzivatel\Desktop\1.3\Patern Remember Game.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
+ChangesEnvironment=yes  
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "czech"; MessagesFile: "compiler:Languages\Czech.isl"
+Name: "dutch"; MessagesFile: "compiler:Languages\Dutch.isl"
 Name: "french"; MessagesFile: "compiler:Languages\French.isl"
-Name: "german"; MessagesFile: "compiler:Languages\German.isl"
-Name: "italian"; MessagesFile: "compiler:Languages\Italian.isl"
-Name: "polish"; MessagesFile: "compiler:Languages\Polish.isl"
-Name: "slovak"; MessagesFile: "compiler:Languages\Slovak.isl"
+Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
+
+[Registry]
+				Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "PRG path"; \
+				ValueData: {autopf}\{#MyAppName}; Flags: preservestringtype
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\Uzivatel\Desktop\patern remember\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\concrt140d.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\mfc140d.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\mfc140ud.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\mfcm140d.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\mfcm140ud.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\MIT License.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\msvcp140_1d.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\msvcp140_2d.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\msvcp140d.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\Patern Remember Game.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\small.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\ucrtbase.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\ucrtbased.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\vccorlib140d.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Uzivatel\Desktop\patern remember\vcruntime140d.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\2.bmp"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\concrt140d.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\gitupdate.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\mfc140d.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\mfc140ud.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\mfcm140d.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\mfcm140ud.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\MIT License.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\msvcp140_1d.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\msvcp140_2d.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\msvcp140d.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\Patern Remember Game.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\small.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\ucrtbase.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\ucrtbased.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\vccorlib140d.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\vcruntime140d.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Uzivatel\Desktop\1.3\ver.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
