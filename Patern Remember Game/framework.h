@@ -531,3 +531,4 @@ HRESULT EnableBlurBehind(HWND hwnd)
     }
     return hr;
 }
+

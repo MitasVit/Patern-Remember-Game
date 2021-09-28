@@ -359,7 +359,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     //C:\Program Files
                     string tm = "C:/Program Files/Patern Remember Game/play.txt";
                     if (FileExist(tm.c_str()) == false) {
-                        MessageBox(NULL, L"You have to remember the rectangles\nin the table(the color and position-by the numlock).\nYou have 5 seconds to do it.\nIf the screen is loaded and you see the\nempty table you will click the \"A\", this means\nyou have started to performancing the tabel\nto do this pres the letter for color and then number\non numlock for pos(pos in numlock keyboard).\nIf you are done you will click on \"check\".\nYou will see if you have all answers right and you \ncan quit or play again or show the right answers.", L"How to play", MB_OK);
+                        MessageBox(NULL, L"You have to remember the squares\nin the table(the color and position-by the numlock).\nYou have 5 seconds to do it.\nIf the screen is loaded and you see the\nempty table you will click the \"A\", this means\nyou have started to performancing the tabel\nto do this pres the letter for color and then number\non numlock for pos(pos in numlock keyboard).\nIf you are done you will click on \"check\".\nYou will see if you have all answers right and you \ncan quit or play again or show the right answers.", L"How to play", MB_OK);
                     }
                     draw3 = false;
                     RedrawWindow(hWnd, 0, 0, RDW_INVALIDATE);
@@ -432,81 +432,81 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, IDM_EXIT, _T("Exit"));
         if (cursor.y > (pos.top + 195) && cursor.x > (pos.left + 55) && cursor.y < (pos.top + 235) && cursor.x < (pos.left + 95)) {
             pres2 = 1;
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase square"));
         }
         else if (cursor.y > (pos.top + 195) && cursor.x > (pos.left + 105) && cursor.y < (pos.top + 235) && cursor.x < (pos.left + 145)) {
             pres2 = 2;
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase square"));
         }
         else if (cursor.y > (pos.top + 195) && cursor.x > (pos.left + 155) && cursor.y < (pos.top + 235) && cursor.x < (pos.left + 195)) {
             pres2 = 3;
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase square"));
             
         }
         else if (cursor.y > (pos.top + 155) && cursor.x > (pos.left + 55) && cursor.y < (pos.top + 195) && cursor.x < (pos.left + 95)) {
             pres2 = 4;
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase square"));
             
         }
         else if (cursor.y > (pos.top + 155) && cursor.x > (pos.left + 105) && cursor.y < (pos.top + 185) && cursor.x < (pos.left + 145)) {
             pres2 = 5;
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase square"));
             
         }
         else if (cursor.y > (pos.top + 145) && cursor.x > (pos.left + 155) && cursor.y < (pos.top + 195) && cursor.x < (pos.left + 195)) {
             pres2 = 6;
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase square"));
             
         }
         else if (cursor.y > (pos.top + 95) && cursor.x > (pos.left + 55) && cursor.y < (pos.top + 135) && cursor.x < (pos.left + 95)) {
             pres2 = 7;
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase square"));
             
         }
         else if (cursor.y > (pos.top + 95) && cursor.x > (pos.left + 105) && cursor.y < (pos.top + 135) && cursor.x < (pos.left + 145)) {
             pres2 = 8;
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase square"));
             
         }
         else if (cursor.y > (pos.top + 95) && cursor.x > (pos.left + 155) && cursor.y < (pos.top + 135) && cursor.x < (pos.left + 195)) {
             pres2 = 9;
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red rectangle"));
-                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase rectangle"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_BLUE, _T("Create Blue square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_YELLOW, _T("Create Yellow square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_GREEN, _T("Create Green square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_RED, _T("Create Red square"));
+                InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, ID_ERASE, _T("Erase square"));
             
         }
         SetForegroundWindow(hWnd);
@@ -859,7 +859,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         else if (usedGy) { 
             Erase2(hdc);
             Draw3x3matrix(hdc);
-            // + rectangles to game
+            // + squares to game
             RECT rect = { 480 , 80 , 870,470 };
             HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
             FillRect(hdc, &rect, brush);
@@ -1029,6 +1029,10 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
         if (!hWndProgressBar) {
             MessageBox(NULL, L"Progress Bar Failed.", L"Error", MB_OK | MB_ICONERROR);
         }
+#pragma warning(disable: 4996)
+        string path = getenv("PRG path");
+        string git = path + "/gitupdate.exe";
+        ShellExecuteA(NULL, "open", git.c_str(), NULL, NULL, SW_SHOWNORMAL);
 
         SendMessage(hWndProgressBar, PBM_SETRANGE, 0, MAKELPARAM(0, 9));
         SendMessage(hWndProgressBar, PBM_SETSTEP, (WPARAM)1, 0);
